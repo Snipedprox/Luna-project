@@ -16,7 +16,7 @@ const Discord = require("discord.js");
 
 const bot = new Aoijs.Bot({
 
-  token: "ODkxNDY4Njk1NzcwMTM2NjY2.YU-y6w.47nvIwdeTFb0BUgDjY8kcH42h6A",
+  token: "XXXXXXXXXXXXXXXXXXX",//bot token
   prefix: "$getservervar[prefix]",
   fetchInvites: true
 
