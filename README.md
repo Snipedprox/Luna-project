@@ -1,6 +1,8 @@
 # Luna-project
 
-How to install
+How to install 
+
+before i begin make sure to invite the bot itself [here](https://discord.com/api/oauth2/authorize?client_id=891468695770136666&permissions=8&scope=bot)
 
 - go to [replit](https://replit.com) and create a new Repl
 
