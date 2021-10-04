@@ -50,7 +50,72 @@ bot.onMessage({
   respondToBots: false// commands will work in dms. set "true" for commands to work in guilds only
 });
 
-
+//you're reaction role 
+bot.reactionAddCommand({
+channel:"$channelid",
+code:`$if[$getuservar[cmid]==1]
+$setuservar[cmid;]
+$setservervar[cemoji;$getservervar[cemoji]$emojitostring.]
+$awaitmessages[$authorid;1m;everything;ny;Time up! Use **$getservervar[prefix]create-rr** if you want to start again!]
+$customemoji[$getvar[createrr]] **New Group - Extra Part**
+Would you like to add another role, or not? Please enter **__yes__** OR **__no__**.
+$elseif[$getuservar[armid]==1]
+$setuservar[armid;]
+$setservervar[aremoji;$emojitostring]
+$awaitmessages[$authorid;1m;everything;armid;Time up! Use **$getservervar[prefix]create-rr** if you want to start again!]
+$customemoji[$getvar[createrr]] **Existing RR - Message ID [Part 3/3]**
+**Please enter the ID of the message you want to add this RR to. Note that the message should be from this channel, if not, try mentioning the channel and entering the message ID too!** Also note that the message should have an RR already, or you would have to execute this again!
+$endelseif
+$else
+$endif
+$onlyif[$isbot[$authorid]==false;]`})
+bot.reactionAddCommand({
+channel:"$channelid",
+code:`$if[$getmessagevar[brole]!=a]
+$djsEval[channel.messages.fetch(message.id).then(d=>d.reactions.cache.find(x=>x.emoji.toString() === "$emojitostring").users.remove(author.id))] 
+$senddm[$authorid;**$servername:** Could not give you the role because you have a blacklisted role needed for that role!]
+$onlyif[$hasanyrole[$authorid;$joinsplittext[;]]==true;{execute:gr}]
+$textsplit[$getmessagevar[brole];.]
+$else
+$if[$getmessagevar[arole]!=a]
+$djsEval[channel.messages.fetch(message.id).then(d=>d.reactions.cache.find(x=>x.emoji.toString() === "$emojitostring").users.remove(author.id))] 
+$senddm[$authorid;**$servername:** You do not have the role required to obtain this role!]
+$onlyif[$hasanyrole[$authorid;$joinsplittext[;]]]==false;{execute:gr}]
+$textsplit[$getmessagevar[arole];.]
+$else
+$giverole[$authorid;$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]]
+$senddm[$authorid;You successfully recieved the role **$rolename[$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]]**, since you reacted to $emojitostring in the server **$servername**!]
+$onlyif[$roleposition[$highestrole[$clientid]]>$roleposition[$highestrole[$authorid]];{execute:uar}]
+$onlyif[$roleposition[$highestrole[$clientid]]>$roleposition[$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]];{execute:nr}]
+$textsplit[$replacetext[$getmessagevar[emoji];$emojitostring;];.]
+$endif
+$endif
+$onlyif[$checkcontains[$getmessagevar[emoji];$emojitostring]==true;]
+$onlyif[$isbot[$authorid]==false;]`})
+bot.awaitedCommand({
+name:"nr",
+code:`$senddm[$authorid;**$servername:** Failed to assign the role, since its above me! Kindly report this to an admin so they can put me above them!]`})
+bot.awaitedCommand({
+name:"uar",
+code:`$senddm[$authorid;**$servername:** Failed to assign the role, since your highest role is above me!]`})
+bot.awaitedCommand({
+name:"gr",
+code:`$giverole[$authorid;$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]]
+$senddm[$authorid;You successfully recieved the role **$rolename[$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]]**, since you reacted to $emojitostring in the server **$servername**!]
+$textsplit[$replacetext[$getmessagevar[emoji];$emojitostring;];.]
+$onlyif[$roleposition[$highestrole[$clientid]]>$roleposition[$highestrole[$authorid]];{execute:uar}]
+$onlyif[$roleposition[$highestrole[$clientid]]>$roleposition[$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]];{execute:nr}]`})
+bot.reactionRemoveCommand({
+channel:"$channelid",
+code:`$takerole[$authorid;$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]]
+$senddm[$authorid;Your role **$rolename[$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]]** was taken from you, since you un-reacted to $emojitostring in the server **$servername**!]
+$onlyif[$hasrole[$authorid;$advancedtextsplit[$getmessagevar[role];.;$findtextsplitindex[]]]==true;]
+$textsplit[$replacetext[$getmessagevar[emoji];$emojitostring;];.]
+$onlyif[$checkcontains[$getmessagevar[emoji];$emojitostring]==true;]
+$onlyif[$getmessagevar[role]!=;]
+$onlyif[$isbot[$authorid]==false;]`})
+bot.onReactionRemove()
+// the end now everything should work 
 
    bot.command({
   name: "addemoji",
